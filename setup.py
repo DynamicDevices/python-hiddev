@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Build import cythonize
-from subprocess import Popen, PIPE
-import os
 
 '''
 	(c) 2012 Christoph Grenz <christophg@grenz-bonn.de>
@@ -40,6 +36,9 @@ setup(
 		'Operating System :: POSIX :: Linux',
 		'Programming Language :: Python',
 		'Topic :: System :: Hardware :: Hardware Drivers',
+	],
+	data_files=[
+		('share/applications', ['hiddevexplorer.desktop']),
 	],
 	packages = ['hiddev'],
 	scripts = ['hiddevexplorer']

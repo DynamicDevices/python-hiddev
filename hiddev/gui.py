@@ -482,6 +482,7 @@ class HIDExplorer(QMainWindow):
 	def __init__(self):
 		super().__init__()
 		self.setWindowTitle('HID Device Explorer')
+		self.setWindowIcon(QIcon.fromTheme('preferences-desktop-peripherals'))
 		self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
 
 		# Main widget
