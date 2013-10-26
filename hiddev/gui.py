@@ -6,14 +6,12 @@
 
 ''' Generic HID explorer GUI '''
 
-import sys
+import pyudev
+import math
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-import pyudev
-import math
 from . import enumerate_udev, usages, HIDDevice, hiddev_usage_ref
-from time import time
 
 class HIDMonitor(QSocketNotifier):
 
@@ -308,6 +306,7 @@ class ReportWidget(QWidget):
 				text = usages.getUsageName(field.logical_usage, vendor=report.device.vendor_id, model=report.device.model_id) \
 						if field.logical_usage else usages.getUsageName(field.usages[0], vendor=report.device.vendor_id, model=report.device.model_id)
 				label = QLabel(text, self)
+				label.setToolTip(self.makeFieldTooltip(field))
 				layout.addWidget(label, i, 0)
 				widget = HIDArrayWidget(report, field, self)
 				children.append(widget)
@@ -317,6 +316,7 @@ class ReportWidget(QWidget):
 				text = usages.getUsageName(field.logical_usage, vendor=report.device.vendor_id, model=report.device.model_id) \
 						if field.logical_usage else usages.getUsageName(field.usages[0], vendor=report.device.vendor_id, model=report.device.model_id)
 				label = QLabel(text, self)
+				label.setToolTip(self.makeFieldTooltip(field))
 				layout.addWidget(label, i, 0)
 				widget = HIDBufferedBytesWidget(report, field, self)
 				children.append(widget)
@@ -328,11 +328,14 @@ class ReportWidget(QWidget):
 
 				text = usages.getUsageName(field.logical_usage, vendor=report.device.vendor_id, model=report.device.model_id) if field.logical_usage else None
 				if text:
-					layout.addWidget(QLabel(text, self), i, 0)
+					label = QLabel(text, self)
+					label.setToolTip(self.makeFieldTooltip(field))
+					layout.addWidget(label, i, 0)
 					i += 1
 
 				for index, usage in enumerate(field.usages):
 					label = QLabel(usages.getUsageName(usage, vendor=report.device.vendor_id, model=report.device.model_id), self)
+					label.setToolTip(self.makeUsageTooltip(field, index, usage))
 					layout.addWidget(label, i, 0)
 					flags = Qt.AlignVCenter
 					if 'constant' in field.flags or report.type == 1:
@@ -350,6 +353,17 @@ class ReportWidget(QWidget):
 	def refresh(self):
 		for child in self.children:
 			child.refresh()
+	
+	def makeFieldTooltip(self, field):
+		result = 'Report {0.id} Field {1.index} ({2})'.format(self.report, field, ','.join(field.flags))
+		if field.physical_usage or field.physical_range[0] !=  field.physical_range[1]:
+			result += ' physical: 0x{0:08X} ({2}-{3} {1}) '.format(field.physical_usage, field.unit, *field.physical_range)
+		if field.logical_usage or field.logical_range[0] != field.logical_range[1]:
+			result += ' logical: 0x{0:08X} ({1}-{2}) '.format(field.logical_usage, *field.logical_range)
+		return result
+	
+	def makeUsageTooltip(self, field, index, usage):
+		return 'Report {0.id} Field {1.index} Usage {2}: 0x{3:08X}'.format(self.report, field, index, usage)
 
 class HIDPropertiesWidget(QWidget):
 
@@ -413,7 +427,6 @@ class HIDDeviceTabs(QTabWidget):
 		elif node:
 			self.clear()
 			self.device = HIDDevice(node)
-			print('{0:04x}:{1:04x}'.format(self.device.vendor_id,self.device.model_id))
 			self.device.setNonBlocking()
 			self.device.refresh()
 			for type, name in [('input', 'Inputs'), ('output', 'Outputs'), ('feature', 'Features')]:
@@ -458,7 +471,6 @@ class HIDDeviceTabs(QTabWidget):
 		if device is None:
 			if self.monitor is not None:
 				self.monitor.setEnabled(False)
-				sip.delete(self.monitor)
 				self.monitor = None
 		else:
 			self.monitor = HIDMonitor(device, self)
@@ -469,7 +481,7 @@ class HIDExplorer(QMainWindow):
 
 	def __init__(self):
 		super().__init__()
-		self.setWindowTitle('USB HID Explorer')
+		self.setWindowTitle('HID Device Explorer')
 		self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.MinimumExpanding)
 
 		# Main widget
@@ -492,9 +504,11 @@ class HIDExplorer(QMainWindow):
 		selectbox.reload()
 
 
+def main(argv=[]):
+	app = QApplication(argv)
+	w = HIDExplorer()
+	w.show()
+	return app.exec_()
 
-app = QApplication(sys.argv)
-w = HIDExplorer()
-w.show()
-
-sys.exit(app.exec_())
+if (__name__ == '__main__'):
+	main()
