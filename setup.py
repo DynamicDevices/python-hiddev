@@ -24,7 +24,12 @@ import os
 '''
 
 setup(
-  name = 'HIDDev',
-  packages = ['hiddev'],
-  scripts = ['hiddevexplorer']
+	name = 'HIDDev',
+	version='0.4',
+	description='Linux HIDDEV Python Bindings',
+	author='Christoph Grenz',
+	author_email='christophg+python@grenz-bonn.de',
+	url='https://gitorious.org/python-hiddev/',
+	packages = ['hiddev'],
+	scripts = ['hiddevexplorer']
 )
