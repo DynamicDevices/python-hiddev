@@ -1762,11 +1762,12 @@ VENDOR_SPECIFIC = {
 				0x02: 'G15 Gaming Mode',
 			})
 	},
-	(0x046d,0xc221): {
+	(0x046d,0xc222): {
 		0xFF00: ('LogitechG15_2', {
 				0x02: 'G15 Special Keys 1',
 				0x03: 'G15 Special Keys 2',
-				0x04: 'G15 LCD Backlight',
+				0x04: 'G15 Backlight Controls',
+				0x06: 'G15 LCD Pixel Block',
 			})
 	}
 	
