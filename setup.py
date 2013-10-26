@@ -26,4 +26,5 @@ import os
 setup(
   name = 'HIDDev',
   packages = ['hiddev'],
+  scripts = ['hiddevexplorer']
 )
