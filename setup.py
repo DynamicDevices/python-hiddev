@@ -21,7 +21,7 @@ from distutils.core import setup
 
 setup(
 	name = 'HIDDev',
-	version='0.4',
+	version='0.4.1',
 	description='Linux HIDDEV Python Bindings',
 	author='Christoph Grenz',
 	author_email='christophg+python@grenz-bonn.de',
@@ -34,7 +34,7 @@ setup(
 		'Intended Audience :: System Administrators',
 		'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
 		'Operating System :: POSIX :: Linux',
-		'Programming Language :: Python',
+		'Programming Language :: Python :: 3',
 		'Topic :: System :: Hardware :: Hardware Drivers',
 	],
 	data_files=[
