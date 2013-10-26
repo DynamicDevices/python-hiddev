@@ -83,9 +83,9 @@ class hiddev_devinfo(_Struct, mode='='):
 	busnum = 'I'
 	devnum = 'I'
 	ifnum = 'I'
-	vendor = 'h'
-	product = 'h'
-	version = 'h'
+	vendor = 'H'
+	product = 'H'
+	version = 'H'
 	_ = 'h'
 	num_applications = 'I'
 
