@@ -850,7 +850,7 @@ class HIDDevice:
 		r, rstruct = self._ioctl_readwrite_struct(HIDIOCGREPORTINFO, rstruct)
 		return Report(self, rstruct), struct.field_index, struct.usage_index
 
-def enumerate_udev(context=None) -> 'iterator(HIDDevice)':
+def enumerate_udev(context=None, *, vendor_id=None, model_id=None) -> 'iterator(HIDDevice)':
 	'''
 		Enumerate all HID devices via UDev
 	'''
@@ -859,4 +859,7 @@ def enumerate_udev(context=None) -> 'iterator(HIDDevice)':
 	devices = context.list_devices(subsystem='usb')
 	for device in devices:
 		if device.sys_name.startswith('hiddev'):
-			yield HIDDevice(device)
+			dev = HIDDevice(device)
+			if vendor_id is None or vendor_id == dev.vendor_id:
+				if model_id is None or model_id == dev.model_id:
+					yield dev
