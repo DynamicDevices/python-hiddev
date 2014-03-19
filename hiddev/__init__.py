@@ -856,7 +856,9 @@ def enumerate_udev(context=None, *, vendor_id=None, model_id=None) -> 'iterator(
 	'''
 	if not context:
 		context = pyudev.Context()
-	devices = context.list_devices(subsystem='usb')
+	devices = context.list_devices()
+	devices.match_subsystem('usbmisc')
+	devices.match_subsystem('usb')
 	for device in devices:
 		if device.sys_name.startswith('hiddev'):
 			dev = HIDDevice(device)
