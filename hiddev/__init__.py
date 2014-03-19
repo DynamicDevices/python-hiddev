@@ -550,6 +550,7 @@ class HIDDevice:
 		self._interface = None
 		self._busnum = None
 		self._devnum = None
+		self._sys_path = None
 
 		if isinstance(device, str):
 			devicestr = device
@@ -559,6 +560,7 @@ class HIDDevice:
 				raise ValueError('Invalid argument for HIDDevDevice(): {!r}'.format(device))
 		elif hasattr(device, 'sys_path'):
 			self._device_node = device.device_node
+			self._sys_path = device.device_path
 			usbdev = device.find_parent('usb', 'usb_device')
 			usbif = device.find_parent('usb', 'usb_interface')
 			if usbdev:
@@ -688,6 +690,17 @@ class HIDDevice:
 				result.append(0)
 
 		return tuple(result)
+	
+	@property
+	def sys_path(self):
+		if self._sys_path:
+			return self._sys_path
+		else:
+			ctx = pyudev.Context()
+			for item in ctx.list_devices(subsystem='usb', DEVNAME=self.device_node):
+				self._sys_path = item.device_path
+				return self._sys_path
+		return None
 
 	@_need_opened
 	def fileno(self):
