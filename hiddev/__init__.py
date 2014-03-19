@@ -573,14 +573,13 @@ class HIDDevice:
 				self._interface = int(usbif.sys_name.rsplit('.',1)[-1])
 		else:
 			raise TypeError('Invalid argument for HIDDevDevice(): {!r}'.format(device))
-
 	
 	def open(self):
 		'''Open the device. This happens implicity on access to most properties and methods.'''
 		if self._closed:
 			raise ValueError('I/O operation on closed device.')
 		if self._file is None:
-			self._file = open(self.device_node, 'wb+', buffering=0)
+			self._file = open(self.device_node, 'rb', buffering=0)
 			self._opened = True
 			# hiddev_usage_ref on read mode
 			self._ioctl_write_struct(HIDIOCSFLAG, _integer(1))
