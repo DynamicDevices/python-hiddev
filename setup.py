@@ -21,7 +21,7 @@ from distutils.core import setup
 
 setup(
 	name = 'HIDDev',
-	version='0.4.1',
+	version='0.4.2',
 	description='Linux HIDDEV Python Bindings',
 	author='Christoph Grenz',
 	author_email='christophg+python@grenz-bonn.de',
