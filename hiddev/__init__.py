@@ -158,6 +158,8 @@ HID_REPORT_TYPE_INPUT = 1
 HID_REPORT_TYPE_OUTPUT = 2
 HID_REPORT_TYPE_FEATURE = 3
 
+EVIOCGRAB = _IOW('E', 0x90, _integer)
+
 @_decorator
 def _need_opened(method, self, *args, **kwargs):
 	if self._closed:
@@ -240,8 +242,6 @@ class Unit:
 			return 'W'
 		elif unitval == 0x00e0e121 and unit_exponent == 5:
 			return 'H'
-		elif unitval == 0x00e0e121 and unit_exponent == 5:
-			return 'Ω'
 		elif unitval == 0x00e0e121 and unit_exponent == 5:
 			return 'Ω'
 		elif unitval == 0x00f0d121 and unit_exponent == 5:
@@ -589,7 +589,7 @@ class HIDDevice:
 		if self._opened:
 			self._opened = False
 			self._file.close()
-
+	
 	def setNonBlocking(self, nonblocking=True):
 		nf = fcntl.fcntl(self.fileno(),fcntl.F_GETFL)
 		if nonblocking:
