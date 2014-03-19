@@ -149,8 +149,12 @@ class HIDArrayWidget(QComboBox):
 
 
 	def refresh(self):
-		value = self.field[0]
-		self.setCurrentIndex(self.findData(value))
+		self.blockSignals(True)
+		try:
+			value = self.field[0]
+			self.setCurrentIndex(self.findData(value))
+		finally:
+			self.blockSignals(False)
 
 	def setValueByIndex(self, index):
 		data = self.itemData(index)
@@ -233,10 +237,13 @@ class HIDBooleanWidget(QCheckBox):
 		self.stateChanged.connect(self.setValue)
 
 	def refresh(self):
+		self.blockSignals(True)
 		try:
 			self.setChecked(self.field[self.usage])
 		except IOError:
 			self.setChecked(False)
+		finally:
+			self.blockSignals(False)
 
 	def setValue(self, value):
 		self.field[self.usage] = self.field.logical_range[1] if value else self.field.logical_range[0]
@@ -272,6 +279,7 @@ class HIDVariableWidget(QWidget):
 		self.refresh()
 
 	def refresh(self):
+		self.slider.blockSignals(True)
 		try:
 			v = self.field[self.usage]
 			self.label.setDecMode()
@@ -280,6 +288,8 @@ class HIDVariableWidget(QWidget):
 		except IOError:
 			self.label.setHexMode()
 			self.label.display(65535)
+		finally:
+			self.slider.blockSignals(False)
 
 	def setValue(self, value):
 		try:
