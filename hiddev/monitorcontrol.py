@@ -164,7 +164,7 @@ class MonitorControls:
 			for subcls in cls.__subclasses__():
 				if hiddev.vendor_id == subcls.VENDOR and hiddev.model_id == subcls.MODEL:
 					return subcls(hiddev)
-		return super().__new__(cls, hiddev)
+		return super().__new__(cls)
 
 	def __init__(self, hiddev):
 		self.hiddev = hiddev
