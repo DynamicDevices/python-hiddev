@@ -8,8 +8,9 @@
 
 import pyudev
 import math
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 from . import enumerate_udev, usages, HIDDevice, hiddev_usage_ref
 
